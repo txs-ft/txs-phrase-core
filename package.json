@@ -1,0 +1,32 @@
+{
+  "name": "txs-phaser-core",
+  "version": "1.0.10",
+  "description": "Shared core for Phaser classroom games",
+  "type": "module",
+  "main": "./dist/txs-phaser-core.umd.cjs",
+  "module": "./dist/txs-phaser-core.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/txs-phaser-core.js",
+      "require": "./dist/txs-phaser-core.umd.cjs"
+    },
+    "./core": "./dist/core/index.js",
+    "./english": "./dist/english/index.js",
+    "./utils": "./dist/utils/index.js"
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "prepack": "npm run build"
+  },
+  "peerDependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^6.3.5",
+    "vite-plugin-dts": "^4.5.4"
+  }
+}
