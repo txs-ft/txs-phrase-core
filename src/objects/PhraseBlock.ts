@@ -1,9 +1,10 @@
 import { PoS, PoSStyles } from '../english';
+import { TextBlock } from './TextBlock';
 
 /**
  * 能轉變詞類從而變色的字塊。
  */
-export class PhraseBlock extends Phaser.GameObjects.Text  {
+export class PhraseBlock extends TextBlock  {
 
   private partsOfSpeech: PoS = PoS.OTHER;
   private cache = {
@@ -43,27 +44,20 @@ export class PhraseBlock extends Phaser.GameObjects.Text  {
    * @param y y位置（世界座標）
    * @param text 初始內容
    */
-  constructor(scene: Phaser.Scene, x: number, y: number, text: string) {
-    super(scene, x, y, text, PhraseBlock.defaultStyle);
-    this.setInteractive({
-      draggable: true
-    });
-    this.setOrigin(0.5, 0.5);
+  constructor(scene: Phaser.Scene) {
+    super(scene, PhraseBlock.defaultPhraseStyle);
   }
 
   /**
    * 每次從Group中甦醒過來，都會必須調用一次。
    * @param text 作為新內容的字符串
    */
-  public initialize(text: string): void {
+  public override initialize(text: string): void {
+    super.initialize(text);
     const style = PoSStyles[PoS.OTHER];
     this.cache.color = style.colorFront;
     this.cache.backgroundColor = style.colorBack;
     this.setStyle(this.cache);
-    this.text = text;
-    (this.body as Phaser.Physics.Arcade.Body).setSize();
-    this.setActive(true);
-    this.setVisible(true);
   }
 
   /**
@@ -73,7 +67,7 @@ export class PhraseBlock extends Phaser.GameObjects.Text  {
    * 
    * 舊實例不會被影響。
    */
-  public static defaultStyle: Phaser.Types.GameObjects.Text.TextStyle = {
+  public static defaultPhraseStyle: Phaser.Types.GameObjects.Text.TextStyle = {
     color: PoSStyles[PoS.OTHER].colorFront, // 文字顏色
     backgroundColor: PoSStyles[PoS.OTHER].colorBack, // 背景顏色
     // 我們只需要改變上面兩個
