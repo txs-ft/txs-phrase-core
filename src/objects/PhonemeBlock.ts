@@ -59,7 +59,7 @@ export class PhonemeBlock extends TextBlock {
     maxLines: 1,
     testString: "W",
     lineSpacing: 10,
-    letterSpacing: 5
+    letterSpacing: 30
   };
 
   /**
