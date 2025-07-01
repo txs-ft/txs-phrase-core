@@ -406,4 +406,25 @@ export class CameraController extends Phaser.GameObjects.GameObject {
     );
   }
 
+  /**
+   * 將鏡頭自動平移至某個座標。
+   * 
+   * 注意，在鏡頭完成平移之前，{@link CameraController}實例將處於凍結狀態，不會對任何用戶輸入作出反應，直到平移結束。
+   * @param x 平移的x目標座標
+   * @param y 平移的y目標座標
+   * @param duration 平移所花的時間（ms）
+   * @param ease 平移所使用的緩動函數
+   * @param force 是否允許超出邊界
+   */
+  public autoPan(x: number, y: number, duration: number, ease?: string | Function, force?: boolean): void {
+    this.setActive(false);
+    this.camera.pan(x, y, duration, ease, force, this.onCameraAutoPanning, this);
+  }
+
+  private onCameraAutoPanning(camera: Phaser.Cameras.Scene2D.Camera, progress: number, x: number, y: number): void {
+    if (progress === 1) {
+      this.setActive(true);
+    }
+  }
+
 }
