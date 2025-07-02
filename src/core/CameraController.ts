@@ -132,6 +132,25 @@ export class CameraController extends Phaser.GameObjects.GameObject {
     input.on(Events.POINTER_UP, this.onPointerUp, this);
     input.on(Events.POINTER_MOVE, this.onPointerMove, this);
   }
+
+  private removeEvents() {
+    const Events = Phaser.Input.Events;
+    const input = this.scene.input;
+    input.off(Events.POINTER_WHEEL, this.onWheel, this);
+    input.off(Events.POINTER_DOWN, this.onPointerDown, this);
+    input.off(Events.POINTER_UP, this.onPointerUp, this);
+    input.off(Events.POINTER_MOVE, this.onPointerMove, this);
+  }
+
+  public override setActive(active: boolean): this {
+    super.setActive(active);
+    if (active) {
+      this.setupEvents();
+    } else {
+      this.removeEvents();
+    }
+    return this;
+  }
   
   /**
    * 幹掉控制器，與輸入系統脫鈎。
@@ -139,12 +158,7 @@ export class CameraController extends Phaser.GameObjects.GameObject {
    */
   public override destroy(fromScene?:boolean): void {
     super.destroy(fromScene);
-    const Events = Phaser.Input.Events;
-    const input = this.scene.input;
-    input.off(Events.POINTER_WHEEL, this.onWheel, this);
-    input.off(Events.POINTER_DOWN, this.onPointerDown, this);
-    input.off(Events.POINTER_UP, this.onPointerUp, this);
-    input.off(Events.POINTER_MOVE, this.onPointerMove, this);
+    this.removeEvents();
   }
 
   private onPointerDown(

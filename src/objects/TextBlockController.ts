@@ -47,11 +47,11 @@ export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects
     const Events = Phaser.Input.Events;
     const input = this.scene.input;
     input.dragTimeThreshold = 100;
-    input.on(Events.GAMEOBJECT_DOWN, this.onDown.bind(this));
-    input.on(Events.DRAG_START, this.onDragStart.bind(this));
-    input.on(Events.DRAG, this.onDrag.bind(this));
-    input.on(Events.DRAG_END, this.onDragEnd.bind(this));
-    input.on(Events.GAMEOBJECT_UP, this.onUp.bind(this));
+    input.on(Events.GAMEOBJECT_DOWN, this.onDown, this);
+    input.on(Events.DRAG_START, this.onDragStart, this);
+    input.on(Events.DRAG, this.onDrag, this);
+    input.on(Events.DRAG_END, this.onDragEnd, this);
+    input.on(Events.GAMEOBJECT_UP, this.onUp, this);
 
     // ** 對上述五種事件的研究結果** 
     // 前提：input.dragTimeThreshold設定為100ms。
@@ -75,6 +75,27 @@ export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects
     // 結果表明，Phaser引擎已經
 
     // input.on(Events.POINTER_DOWN, this.onPointerDown.bind(this));
+  }
+
+  private removeEvents(): void {
+    const Events = Phaser.Input.Events;
+    const input = this.scene.input;
+    input.dragTimeThreshold = 100;
+    input.off(Events.GAMEOBJECT_DOWN, this.onDown, this);
+    input.off(Events.DRAG_START, this.onDragStart, this);
+    input.off(Events.DRAG, this.onDrag, this);
+    input.off(Events.DRAG_END, this.onDragEnd, this);
+    input.off(Events.GAMEOBJECT_UP, this.onUp, this);
+  }
+
+  public override setActive(active: boolean): this {
+    super.setActive(active);
+    if (active) {
+      this.setupInput();
+    } else {
+      this.removeEvents();
+    }
+    return this;
   }
 
   private onDown(
@@ -170,6 +191,7 @@ export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects
   public override destroy(fromScene?: boolean): void {
     super.destroy(fromScene);
     this.FirstInteracted.destroy();
+    this.removeEvents();
   }
 
 }
