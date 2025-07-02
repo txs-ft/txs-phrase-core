@@ -1,18 +1,26 @@
 import { TextBlock } from "./TextBlock";
+import { Event } from '../core';
+
 
 /**
- * 實現{@link PhraseBlock}拖曳及點擊變色邏輯的控制器。
+ * 實現{@link TextBlock}拖曳及點擊邏輯的控制器。
  */
 export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects.GameObject {
 
   /**
+   * 本控制器首次接收到任何來自用戶的互動，便會觸發{@link TextBlockController#FirstInteracted}事件。
+   */
+  public readonly FirstInteracted = new Event<TextBlockController<T>>();
+
+  /**
    * 用戶是否曾經拖曳字塊？
    * 
-   * 是的話，我們不需要在用戶放手時讓字塊變色。
+   * 是的話，我們不需要在用戶放手時當成點擊。
    * 
-   * 否的話，用戶真的是在點擊字塊，所以需要變色。
+   * 否的話，用戶真的是在點擊字塊。
    */
   private hasDragged: boolean;
+  private interacted: boolean = false;
 
   /**
    * 現時控制器正在與之互動的{@link PhraseBlock}實例。
@@ -76,6 +84,10 @@ export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects
   ): void {
     if (gameObject.type !== "TextBlock")
       return;
+    if (!this.interacted) {
+      this.interacted = true;
+      this.FirstInteracted.invoke(this);
+    }
     this.hasDragged = false;
     this.block = gameObject as T;
     //this.logBlock(this.block, "onDown");
@@ -153,6 +165,11 @@ export class TextBlockController<T extends TextBlock> extends Phaser.GameObjects
 
   private logBlock(block: T, msg: string): void {
     console.log(`TextBlock[${block.text}]: ${msg}`);
+  }
+
+  public override destroy(fromScene?: boolean): void {
+    super.destroy(fromScene);
+    this.FirstInteracted.destroy();
   }
 
 }

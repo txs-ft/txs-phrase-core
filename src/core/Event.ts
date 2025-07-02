@@ -95,5 +95,13 @@ export class Event<TSender extends object, TEventArgs extends any[] = []> {
     this.pool.length = 0;
   }
 
+  /**
+   * 完全停用事件，會調用{@link Event#clear}和{@link Event#freePoolMemory}。
+   */
+  public destroy(): void {
+    this.clear();
+    this.freePoolMemory();
+  }
+
 }
 
